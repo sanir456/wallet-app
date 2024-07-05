@@ -1,5 +1,5 @@
 JWT_TOKEN = "Sani Ranpariya"
 
-module.exports = {,
-    JWT_TOKEN
+module.exports = {
+    JWT_SECRET
 }

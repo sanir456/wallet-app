@@ -1,6 +1,6 @@
-const express = require("express")
-const userRouter = require("./user")
+import userRouter from "./user"
 
+const express = require("express")
 const router = express.Router()
 
 router.get("/user",userRouter)
