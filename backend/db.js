@@ -1,7 +1,8 @@
-const mongoose = require("mongoose")
-const bcrypt = require("bcryptjs")
+import  mongoose  from "mongoose"
+import  bcrypt  from "bcryptjs"
+import { DB_STRING } from "./config.js"
 
-mongoose.connect("mongodb+srv://root:1234567890@test.tzv3isg.mongodb.net/online-wallet")
+mongoose.connect(DB_STRING)
 
 const userSchema = new mongoose.Schema({
     username:{
@@ -50,8 +51,5 @@ userSchema.method.comparePassword = async (userPassword) => {
     return bcrypt.compare(userPassword, this.password)
 }
 
-const User = mongoose.model("User", userSchema)
+export const User = mongoose.model("User", userSchema)
 
-module.exports = {
-    User
-}

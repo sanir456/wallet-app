@@ -1,6 +1,7 @@
-const express = require("express")
-const mainRouter = require("./routes/index")
-const cors = require("cors")
+import express from "express"
+import cors from "cors"
+import mainRouter from "./routes/index.js"
+
 const app = express()
 
 app.use(cors())
@@ -19,6 +20,5 @@ app.use((err,req,res,next)=> {
 })
 
 app.listen(3000,() => {
-    connection();
     console.log("App running on port: 3000");
 })

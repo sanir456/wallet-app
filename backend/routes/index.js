@@ -1,10 +1,8 @@
-import userRouter from "./user"
+import express from "express"
+import userRouter from "./user.js"
 
-const express = require("express")
-const router = express.Router()
+const mainRouter = express.Router()
 
-router.get("/user",userRouter)
+mainRouter.get("/user",userRouter)
 
-module.exports = {
-    router
-}
+export default mainRouter
