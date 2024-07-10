@@ -11,7 +11,7 @@ app.use(express.json())
 app.use("/api/v1",mainRouter)
 
 app.use("/*",(req,res,next) => {
-    next({message:"Page not fount", status:404});
+    next({message:"Page not found", status:404});
 })
 
 app.use((err,req,res,next)=> {
