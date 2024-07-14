@@ -35,8 +35,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', async function(next) {
-    const user = this
-    if(!user.isModified('password')){
+    if(!this.isModified('password')){
         next()
     }
 
@@ -46,11 +45,11 @@ userSchema.pre('save', async function(next) {
         }
     
         // Hash the password along with the generated salt
-        bcrypt.hash(user.password, salt, (err, hash) => {
+        bcrypt.hash(this.password, salt, (err, hash) => {
           if (err) {
             return next(err);
           }
-          user.password = hash;
+          this.password = hash;
           next();
         })
     })
@@ -72,6 +71,14 @@ const accountSchema = mongoose.Schema({
         type:Number,
         required:true
     }
+})
+
+accountSchema.pre('save', async function(next) {
+    if(!this.isModified('balance')){
+        next()
+    }
+
+    this.balance = this.balance*100
 })
 
 export const Account = mongoose.model("Account", accountSchema)
