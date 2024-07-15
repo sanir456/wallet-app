@@ -8,9 +8,9 @@ const accountRouter = express.Router()
 accountRouter.get("/balance", authMiddleware, async (req,res) => {
     const userAcc = await Account.findOne({user:req.userID})
     if(!userAcc){
-        res.status(404).json({success:false, message:"Account not found"})
+        res.status(404).json({success:false, error:"Account not found"})
     }
-    res.status(200).json({success:true, balance:userAcc.balance/100})
+    res.status(200).json({success:true, balance:userAcc.balance})
 })
 
 accountRouter.post("/transfer", authMiddleware, async (req, res) => {
@@ -19,25 +19,23 @@ accountRouter.post("/transfer", authMiddleware, async (req, res) => {
     session.startTransaction()
     try {
         const fromAccount = await Account.findOne({userId:req.userId}).session(session)
-        if(!fromAccount || (fromAccount.balance)/100 < amount){
+        if(!fromAccount || fromAccount.balance < amount*100){
             throw new Error("Insufficient balance")
         }
-        fromAccount.balance = fromAccount.balance/100
 
         const toAccount =  await Account.findOne({userId:toUser}).session(session)
         if(!toAccount){
             throw new Error("Invalid account")
         }
-        toAccount.balance = toAccount.balance/100
 
         await Account.updateOne({userId:req.userId},{
             $inc: {
-                balance:-amount
+                balance:-amount*100
             }
         }).session(session)
         await Account.updateOne({userId:toUser},{
             $inc: {
-                balance:amount
+                balance:amount*100
             }
         }).session(session)
 
@@ -45,7 +43,7 @@ accountRouter.post("/transfer", authMiddleware, async (req, res) => {
         return res.status(200).json({success:true, message:"Transfer successful"})
     } catch(error) {
         await session.abortTransaction()
-        return res.status(400).json({success:false, message:error})
+        return res.status(400).json({success:false, error:error})
     } 
     finally {
         session.endSession()

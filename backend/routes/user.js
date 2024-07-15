@@ -14,17 +14,18 @@ userRouter.post("/signup", async (req,res) => {
     console.log(body);
     const {success} = signupSchema.safeParse(body)
     if(!success){
-        return res.status(400).json({success:false, message:"Bad request"})
+        return res.status(400).json({success:false, error:"Bad request"})
     }
 
     const user =  await User.findOne({
         username:body.username
     })
     if(user){
-        return res.status(400).json({success:false, message:"User already exits"})
+        return res.status(400).json({success:false, error:"User already exits"})
     }
 
-    const newUser = await User.create(body)
+    let newUser = new User(body)
+    newUser = await newUser.save() 
     const userAcc = await Account.create({
         userId:newUser._id,
         balance: (Math.floor(Math.random() * 10000) + 1)
@@ -44,13 +45,13 @@ userRouter.post("/signin", async (req,res) => {
 
     const {success} = signinSchema.safeParse(body)
     if(!success){
-        return res.status(400).json({success:false, message:"Bad request"})
+        return res.status(400).json({success:false, error:"Bad request"})
     }
 
     const user = await User.findOne({username:body.username})
     const isMatch = user.comparePassword(body.password)
     if(!isMatch){
-        return res.status(401).json({success:false, message:"Invalid password"})
+        return res.status(401).json({success:false, error:"Invalid password"})
     }
 
     const token = jwt.sign({
@@ -63,16 +64,15 @@ userRouter.put("/update", authMiddleware, async (req,res) => {
     const body = req.body
     const {success} = updateSchema.safeParse(body)
     if(!success){
-        return res.status(400).json({success:false, message:"Bad request"})
+        return res.status(400).json({success:false, error:"Bad request"})
     }
     console.log(body)
     console.log(req.userId);
     await User.findByIdAndUpdate(req.userId,body)
-    res.status(200).json({success:false, message:"User updated"})
+    res.status(200).json({success:true, message:"User updated"})
 })
 
 userRouter.get("/searchUser", authMiddleware, async (req,res) => {
-    console.log(req.query);
     const filter = req.query.filter || ""
 
     const users = await User.find({
@@ -81,7 +81,16 @@ userRouter.get("/searchUser", authMiddleware, async (req,res) => {
             {lastName:{$regex:filter}}
         ]
     })
-    res.status(200).json({success:true, users:users})
+    
+    res.status(200).json({
+        success:true,
+        users:users.map((user) => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id:user._id
+        }))
+    })
 })
 
 export default userRouter

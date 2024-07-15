@@ -35,24 +35,22 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', async function(next) {
-    if(!this.isModified('password')){
+    const user = this
+   
+    if(!user.isModified('password')){
         next()
     }
-
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-          return next(err);
-        }
+   
+    try {
+        const salt = await bcrypt.genSalt(10)
     
         // Hash the password along with the generated salt
-        bcrypt.hash(this.password, salt, (err, hash) => {
-          if (err) {
-            return next(err);
-          }
-          this.password = hash;
-          next();
-        })
-    })
+        user.password = await bcrypt.hash(user.password, salt) 
+        next();
+    } catch(err){
+        next(err)
+    }
+
 })
 
 userSchema.methods.comparePassword = function(userPassword) {

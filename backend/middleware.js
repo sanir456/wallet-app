@@ -10,8 +10,13 @@ function authMiddleware(req,res,next) {
     const token = authHeader.split(' ')[1]
     try {
         const decode = jwt.verify(token, JWT_TOKEN)
-        req.userId = decode.userId
-        next()
+        if(decode.userId){
+            req.userId = decode.userId
+            next()
+        }
+        else {
+            return res.status(401).json({error:"Authentication failed"})
+        }
     } catch(error) {
         return res.status(401).json({error:"Invalid authentication token"})
     }
