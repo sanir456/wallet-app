@@ -1,11 +1,12 @@
-import BottomWarning from "../components/BottomWarning";
-import Button from "../components/Button";
-import Heading from "../components/Heading";
-import InputBox from "../components/InputBox";
-import SubHeading from "../components/SubHeading";
+import { lazy } from "react";
+const Heading = lazy(() => import("../components/Heading"))
+const SubHeading = lazy(() => import("../components/SubHeading"))
+const InputBox = lazy(() => import("../components/InputBox"))
+const Button = lazy(() => import("../components/Button"))
+const BottomWarning = lazy(() => import("../components/BottomWarning"))
 
 export default function Signup(){
-    return <div className="flex justify-center items-center min-h-screen bg-gray-400">
+    return <div className="flex justify-center items-center min-h-screen bg-gray-300">
         <div className="m-2 p-6 border shadow-lg rounded bg-white">
             <Heading text="Sing Up"></Heading>
             <SubHeading text="Enter details to create account"></SubHeading>
