@@ -16,14 +16,12 @@ userRouter.post("/signup", async (req,res) => {
     if(!success){
         return res.status(400).json({success:false, error:"Bad request"})
     }
-
     const user =  await User.findOne({
         username:body.username
     })
     if(user){
         return res.status(400).json({success:false, error:"User already exits"})
     }
-
     let newUser = new User(body)
     newUser = await newUser.save() 
     const userAcc = await Account.create({

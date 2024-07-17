@@ -14,6 +14,7 @@ function App() {
     <BrowserRouter>
       <Navbar></Navbar>
       <Routes>
+        <Route path="/" element={<Suspense fallback={"..Loading"}><Signup></Signup></Suspense>}></Route>
         <Route path="/signup" element={<Suspense fallback={"..Loading"}><Signup></Signup></Suspense>}></Route>
         <Route path="/signin" element={<Suspense fallback={"..Loading"}><Signin></Signin></Suspense>}></Route>
         <Route path="/dashboard" element={<Suspense fallback={"..Loading"}><Dashboard></Dashboard></Suspense>}></Route>
