@@ -46,7 +46,7 @@ export default function SendMoney() {
                 <InputBox id="amount" type="number" text="Amount (in Rs)" onChange={(e) => {setAmount(e.target.value)}} placeholder="Enter Amount"></InputBox>
             </div>
             <div className="pb-8">
-                <Button id="tx_init" onClick={initiateTransfer} text="Initiate Transfer" className="bg-green-600 text-white font-medium w-full rounded-md text-xs p-2 my-2"></Button>
+                <button id="tx_init" onClick={initiateTransfer}  className="bg-green-600 text-white font-medium w-full rounded-md text-xs p-2 my-2">Initiate Transfer</button>
             </div>
         </div>
     </div>
