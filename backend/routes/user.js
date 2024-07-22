@@ -74,9 +74,12 @@ userRouter.get("/searchUser", authMiddleware, async (req,res) => {
     const filter = req.query.filter || ""
 
     const users = await User.find({
-        $or:[
-            {firstName:{$regex:filter}},
-            {lastName:{$regex:filter}}
+        $and:[
+            {$or:[
+                {firstName:{$regex:filter}},
+                {lastName:{$regex:filter}}
+            ]},
+            {_id:{$ne:req.userId}}
         ]
     })
     

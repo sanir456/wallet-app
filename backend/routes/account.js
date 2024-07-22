@@ -6,7 +6,7 @@ import { Account } from "../db.js"
 const accountRouter = express.Router()
 
 accountRouter.get("/balance", authMiddleware, async (req,res) => {
-    const userAcc = await Account.findOne({user:req.userID})
+    const userAcc = await Account.findOne({userId:req.userId})
     if(!userAcc){
         res.status(404).json({success:false, error:"Account not found"})
     }
@@ -43,7 +43,7 @@ accountRouter.post("/transfer", authMiddleware, async (req, res) => {
         return res.status(200).json({success:true, message:"Transfer successful"})
     } catch(error) {
         await session.abortTransaction()
-        return res.status(400).json({success:false, error:error})
+        return res.status(400).json({success:false, error:error.message})
     } 
     finally {
         session.endSession()
