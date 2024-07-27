@@ -11,15 +11,19 @@ export default function Users() {
     const [search, setSearch] = useState("")
 
     useEffect(() => {
-        async function getUser() {
-            const response = await axios.get("http://localhost:3000/api/v1/user/searchUser?filter="+search,{
-                headers:{
-                    'authorization':"Beared " + localStorage.getItem("token")
-                }
-            })
-            setUsers(response.data.users)
+        const fetchUsers = async () =>  {
+            try {
+                const response = await axios.get("http://localhost:3000/api/v1/user/searchUser?filter="+search,{
+                    headers:{
+                        'authorization':"Beared " + localStorage.getItem("token")
+                    }
+                })
+                setUsers(response.data.users)
+            }catch(error){
+            console.log(error);
+            }
         }
-        getUser()
+        fetchUsers()
     },[search])
 
     function onChangeHandle(e) {

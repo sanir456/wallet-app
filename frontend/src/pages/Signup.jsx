@@ -1,6 +1,8 @@
 import { lazy, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import { useSetRecoilState } from "recoil";
+import { userAtom } from "../store/atoms/user";
 const Heading = lazy(() => import("../components/Heading"))
 const SubHeading = lazy(() => import("../components/SubHeading"))
 const InputBox = lazy(() => import("../components/InputBox"))
@@ -14,7 +16,7 @@ export default function Signup(){
         lastName:'',
         password:''
     })
-
+    const setUser = useSetRecoilState(userAtom)
     const navigate = useNavigate()
 
     const onChangeHandle = (e) => {
@@ -29,6 +31,10 @@ export default function Signup(){
         try{
             const response =  await axios.post("http://localhost:3000/api/v1/user/signup", signUpData)
             localStorage.setItem("token", response.data.token)
+            setUser({
+                ...response.data.user,
+                isLoggedIn:true
+            })
             navigate("/dashboard")
         }catch(err){
             alert(err.response.data.error)

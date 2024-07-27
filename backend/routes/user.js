@@ -7,7 +7,17 @@ import { signupSchema, updateSchema, signinSchema } from "../types.js"
 
 const userRouter = express.Router()
 
-
+userRouter.get("/me", authMiddleware, async (req,res) => {
+    const user = await User.findOne({_id:req.userId})
+    res.status(200).json({
+        success:true, 
+        user:{
+            username:user.username,
+            firstName:user.firstName,
+            lastName:user.lastName
+        }
+    })
+})
 
 userRouter.post("/signup", async (req,res) => {
     const body = req.body;
@@ -34,7 +44,12 @@ userRouter.post("/signup", async (req,res) => {
     return res.status(200).json({
         success:true, 
         message: "User created",
-        token: token
+        token: token,
+        user:{
+            username:newUser.username,
+            firstName:newUser.firstName,
+            lastName:newUser.lastName
+        }
     })
 })
 
@@ -55,7 +70,16 @@ userRouter.post("/signin", async (req,res) => {
     const token = jwt.sign({
         userId:user._id
     },JWT_TOKEN)
-    res.status(200).json({success:true, message:"signin successful", token: token})
+    res.status(200).json({
+        success:true, 
+        message:"signin successful", 
+        token: token,
+        user:{
+            username:user.username,
+            firstName:user.firstName,
+            lastName:user.lastName
+        }
+    })
 })
 
 userRouter.put("/update", authMiddleware, async (req,res) => {
